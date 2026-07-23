@@ -1,14 +1,12 @@
-version: "3.9"
 services:
-  scp-deadicated:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  scpsl:
+    build: .
     container_name: scp-deadicated
     ports:
       - "7777:7777/udp"
-    restart: unless-stopped
     volumes:
-      - ./config:/config:Z
-    stdin_open: true
-    tty: true
+      - ./config:/config:z
+    environment:
+      - PORT=7777
+    userns_mode: keep-id
+    restart: unless-stopped
