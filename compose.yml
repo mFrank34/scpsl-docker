@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  scp-deadicated:
+    build:
+      context: .
+      dockerfile: dockerfile
+      network: host
+    container_name: scp-deadicated
+    ports:
+      - "7777:7777/udp"
+    restart: unless-stopped
+    volumes:
+      - ./config:/config:Z
