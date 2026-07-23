@@ -1,7 +1,5 @@
 ARG BASE_IMAGE=steamcmd/steamcmd:latest
 FROM ${BASE_IMAGE} AS steambuild
-LABEL maintainer="Ryan Smith <fragsoc@yusu.org>, Laura Demkowicz-Duffy <fragsoc@yusu.org>"
-
 ARG APPID=996560
 ARG STEAM_BETA=""
 
@@ -24,12 +22,9 @@ RUN mkdir -p /scpserver && \
 FROM debian:bookworm-slim AS runner
 
 ARG PORT=7777
-ARG UID=999
-ARG GID=999
-
 ENV CONFIG_LOC="/config"
 ENV INSTALL_LOC="/scpserver"
-ENV GAME_CONFIG_LOC="/home/scpsl/.config/SCP Secret Laboratory/config"
+ENV GAME_CONFIG_LOC="/root/.config/SCP Secret Laboratory/config"
 
 USER root
 
@@ -37,12 +32,10 @@ RUN apt-get update && apt-get install -y \
     mono-complete \
     && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd -g $GID scpsl && \
-    useradd -m -s /bin/bash -u $UID -g scpsl scpsl && \
-    mkdir -p "$GAME_CONFIG_LOC" $CONFIG_LOC $INSTALL_LOC && \
-    chown -R scpsl:scpsl $INSTALL_LOC $CONFIG_LOC /home/scpsl/.config
+RUN mkdir -p "$GAME_CONFIG_LOC" $CONFIG_LOC $INSTALL_LOC && \
+    ln -s $CONFIG_LOC "$GAME_CONFIG_LOC/$PORT"
 
-COPY --chown=$UID:$GID --from=steambuild /scpserver $INSTALL_LOC
+COPY --from=steambuild /scpserver $INSTALL_LOC
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
