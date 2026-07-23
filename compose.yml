@@ -3,7 +3,7 @@ services:
   scp-deadicated:
     build:
       context: .
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
       network: host
     container_name: scp-deadicated
     ports:
