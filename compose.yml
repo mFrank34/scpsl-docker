@@ -4,10 +4,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      network: host
     container_name: scp-deadicated
     ports:
       - "7777:7777/udp"
     restart: unless-stopped
     volumes:
       - ./config:/config:Z
+    stdin_open: true
+    tty: true
